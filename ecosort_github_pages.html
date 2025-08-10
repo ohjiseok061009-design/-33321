@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>에코소팅 - 대전광역시 분리배출 가이드</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: #f9fafb;
+            padding-bottom: 80px;
+        }
+        
+        .container {
+            max-width: 448px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .header-content {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .back-btn {
+            color: #2563eb;
+            font-weight: 500;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .location {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            color: #6b7280;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .location:hover {
+            color: #2563eb;
+        }
+        
+        .main-content {
+            padding: 16px;
+        }
+        
+        .earth-card {
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            border-radius: 16px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 24px;
+        }
+        
+        .earth-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .earth-level {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .earth-points {
+            text-align: right;
+        }
+        
+        .points {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .streak {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .earth-icon {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        
+        .earth-emoji {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            height: 8px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 999px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 16px;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .card-title {
+            font-weight: 600;
+        }
+        
+        .disposal-info {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .disposal-allowed {
+            background: #f0fdf4;
+        }
+        
+        .disposal-forbidden {
+            background: #fef2f2;
+        }
+        
+        .disposal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .disposal-allowed .disposal-header {
+            color: #166534;
+        }
+        
+        .disposal-forbidden .disposal-header {
+            color: #dc2626;
+        }
+        
+        .camera-btn {
+            width: 100%;
+            background: linear-gradient(to right, #10b981, #059669);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+            margin-bottom: 16px;
+        }
+        
+        .camera-btn:hover {
+            background: linear-gradient(to right, #059669, #047857);
+        }
+        
+        .quick-menu {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .quick-btn {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .quick-btn:hover {
+            background: #f9fafb;
+        }
+        
+        .bottom-nav {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+        
+        .bottom-nav-content {
+            max-width: 448px;
+            margin: 0 auto;
+            padding: 8px 16px;
+        }
+        
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+        }
+        
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px;
+            border-radius: 8px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6b7280;
+        }
+        
+        .nav-btn.active {
+            color: #10b981;
+            background: #f0fdf4;
+        }
+        
+        .nav-label {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        
+        .camera-container {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .camera-placeholder {
+            background: #f3f4f6;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 16px;
+        }
+        
+        .camera-video {
+            width: 100%;
+            height: 256px;
+            background: black;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .camera-overlay {
+            position: absolute;
+            inset: 0;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            pointer-events: none;
+        }
+        
+        .recording-indicator {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: #dc2626;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .demo-section {
+            background: #eff6ff;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .demo-btn {
+            width: 100%;
+            background: white;
+            border: 1px solid #bfdbfe;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+        
+        .demo-btn:hover {
+            background: #dbeafe;
+        }
+        
+        .recognition-result {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            border: 2px solid #bbf7d0;
+            margin-top: 16px;
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: #166534;
+        }
+        
+        .confidence-badge {
+            background: #dcfce7;
+            color: #166534;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .disposal-item {
+            background: #f9fafb;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .disposal-method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        
+        .method-recycle {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .method-general {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .tips-section {
+            background: #fefce8;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+        
+        .tips-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            color: #92400e;
+        }
+        
+        .points-earned {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #10b981;
+            font-weight: 500;
+            margin-top: 16px;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            background: #10b981;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+        
+        .btn-primary:hover {
+            background: #059669;
+        }
+        
+        .btn-secondary {
+            width: 100%;
+            background: #dc2626;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:hover {
+            background: #b91c1c;
+        }
+        
+        .schedule-grid {
+            display: grid;
+            gap: 16px;
+        }
+        
+        .schedule-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        
+        .schedule-recycle {
+            background: #f0fdf4;
+        }
+        
+        .schedule-general {
+            background: #f9fafb;
+        }
+        
+        .schedule-food {
+            background: #fefce8;
+        }
+        
+        .schedule-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .schedule-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .icon-recycle {
+            background: #10b981;
+        }
+        
+        .icon-general {
+            background: #6b7280;
+        }
+        
+        .icon-food {
+            background: #d97706;
+        }
+        
+        .alert-section {
+            background: #fef2f2;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+        
+        .alert-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #dc2626;
+        }
+        
+        .info-section {
+            background: #eff6ff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+        
+        .info-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1d4ed8;
+        }
+        
+        .guide-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 12px;
+        }
+        
+        .guide-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .guide-plastic {
+            color: #059669;
+        }
+        
+        .guide-paper {
+            color: #1d4ed8;
+        }
+        
+        .guide-can {
+            color: #6b7280;
+        }
+        
+        .guide-list {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .guide-list li {
+            margin-bottom: 4px;
+        }
+        
+        .location-selector {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        
+        .location-modal {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #6b7280;
+            cursor: pointer;
+        }
+        
+        .close-btn:hover {
+            color: #374151;
+        }
+        
+        .form-group {
+            margin-bottom: 12px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: white;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+        
+        .location-info {
+            background: #eff6ff;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+        
+        .location-info h3 {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .location-info-list {
+            font-size: 14px;
+        }
+        
+        .location-info-list p {
+            margin-bottom: 4px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef } = React;
+        const { 
+            Camera, MapPin, Calendar, Clock, Leaf, Star, Trophy, 
+            Info, CheckCircle, AlertTriangle, Recycle 
+        } = lucide;
+
+        const EcoSortApp = () => {
+            const [currentView, setCurrentView] = useState('home');
+            const [selectedDistrict, setSelectedDistrict] = useState('서구');
+            const [selectedDong, setSelectedDong] = useState('도마동');
+            const [earthLevel, setEarthLevel] = useState(1);
+            const [ecoPoints, setEcoPoints] = useState(120);
+            const [dailyStreak, setDailyStreak] = useState(7);
+            const [cameraActive, setCameraActive] = useState(false);
+            const [recognitionResult, setRecognitionResult] = useState(null);
+            const [showLocationSelector, setShowLocationSelector] = useState(false);
+            const videoRef = useRef(null);
+
+            // 대전광역시 전체 지역별 분리배출 정보
+            const locationDatabase = {
+                "동구": {
+                    dongs: ["가양동", "대별동", "삼성동", "성남동", "소제동", "신인동", "용운동", "용전동", "장동", "중앙동", "판암동", "홍도동", "효동"],
+                    schedule: {
+                        general: "일~금요일 20시 이후",
+                        recycle: "화, 목, 토요일",
+                        food: "일~금요일 20시 이후"
+                    },
+                    rules: {
+                        noDisposal: "토요일은 재활용품만 배출 가능",
+                        location: "지정된 배출장소",
+                        contact: "동구청 환경위생과 042-251-4364"
+                    }
+                },
+                "중구": {
+                    dongs: ["대사동", "대흥동", "목동", "문창동", "부사동", "산성동", "석교동", "용두동", "유천동", "은행동", "중촌동", "침산동", "태평동"],
+                    schedule: {
+                        general: "일~목요일 18시 이후",
+                        recycle: "월, 수, 금요일",
+                        food: "일~목요일 18시 이후"
+                    },
+                    rules: {
+                        noDisposal: "금, 토, 일요일은 일반쓰레기 배출 금지",
+                        location: "문전배출 원칙",
+                        contact: "중구청 청소행정과 042-606-6234"
+                    }
+                },
+                "서구": {
+                    dongs: ["가수원동", "가장동", "갈마동", "괴정동", "내동", "도마동", "둔산동", "만년동", "매노동", "복수동", "변동", "용문동", "우명동", "월평동", "장안동", "정림동", "평촌동"],
+                    schedule: {
+                        general: "일~목요일 18시 이후",
+                        recycle: "화, 목요일",
+                        food: "일~목요일 18시 이후"
+                    },
+                    rules: {
+                        noDisposal: "금, 토요일은 모든 쓰레기 배출 금지",
+                        location: "내 집 앞 문전배출",
+                        contact: "서구청 자원순환과 042-288-3574"
+                    }
+                },
+                "유성구": {
+                    dongs: ["갑동", "관평동", "구성동", "궁동", "노은동", "상대동", "신성동", "어은동", "온천동", "원신흥동", "자운동", "장대동", "전민동", "지족동", "탑립동", "학하동"],
+                    schedule: {
+                        general: "월~금요일 19시 이후",
+                        recycle: "월, 수, 토요일",
+                        food: "월~금요일 19시 이후"
+                    },
+                    rules: {
+                        noDisposal: "토요일은 재활용품만, 일요일은 모든 쓰레기 배출 금지",
+                        location: "공동주택은 지정장소, 단독주택은 문전배출",
+                        contact: "유성구청 자원순환과 042-611-2174"
+                    }
+                },
+                "대덕구": {
+                    dongs: ["갈전동", "대화동", "덕암동", "목상동", "비래동", "석봉동", "송촌동", "신탄진동", "오정동", "와동", "읍내동", "장동", "중리동", "평촌동"],
+                    schedule: {
+                        general: "월~금요일 20시 이후",
+                        recycle: "월, 목요일",
+                        food: "월~금요일 20시 이후"
+                    },
+                    rules: {
+                        noDisposal: "토, 일요일은 모든 쓰레기 배출 금지",
+                        location: "지정된 수거장소",
+                        contact: "대덕구청 환경과 042-608-6924"
+                    }
+                }
+            };
+
+            const getCurrentLocationData = () => {
+                return locationDatabase[selectedDistrict];
+            };
+
+            // 배달용기 인식 시뮬레이션 데이터
+            const deliveryContainers = {
+                "치킨박스": {
+                    materials: ["종이박스", "기름때", "플라스틱 소스통"],
+                    disposal: [
+                        { item: "종이박스 (기름 묻음)", method: "일반쓰레기", reason: "기름때가 묻어 재활용 불가" },
+                        { item: "플라스틱 소스통", method: "플라스틱 재활용", reason: "깨끗이 씻은 후 분리배출" },
+                        { item: "포크/나이프", method: "플라스틱 재활용", reason: "일회용품도 깨끗하면 재활용 가능" }
+                    ],
+                    tips: "기름기가 많이 묻은 종이는 재활용이 어려워요. 소스통은 반드시 깨끗이 씻어주세요!"
+                },
+                "중국집 용기": {
+                    materials: ["플라스틱 용기", "알루미늄 뚜껑", "비닐봉지"],
+                    disposal: [
+                        { item: "검은 플라스틱 용기", method: "일반쓰레기", reason: "검은색 플라스틱은 재활용 불가" },
+                        { item: "알루미늄 뚜껑", method: "캔류 재활용", reason: "깨끗이 씻은 후 분리배출" },
+                        { item: "비닐봉지", method: "비닐류 재활용", reason: "음식물 제거 후 분리배출" }
+                    ],
+                    tips: "검은색 플라스틱은 재활용이 어려워요. 투명하거나 흰색 용기를 선택하는 것이 환경에 좋아요!"
+                }
+            };
+
+            const startCamera = async () => {
+                setCameraActive(true);
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { facingMode: 'environment' } 
+                    });
+                    if (videoRef.current) {
+                        videoRef.current.srcObject = stream;
+                    }
+                } catch (err) {
+                    console.log("카메라 접근 실패, 시뮬레이션 모드로 진행");
+                }
+            };
+
+            const stopCamera = () => {
+                setCameraActive(false);
+                if (videoRef.current && videoRef.current.srcObject) {
+                    const tracks = videoRef.current.srcObject.getTracks();
+                    tracks.forEach(track => track.stop());
+                }
+            };
+
+            const simulateRecognition = (itemType) => {
+                const result = deliveryContainers[itemType];
+                setRecognitionResult({
+                    item: itemType,
+                    confidence: 0.92,
+                    ...result
+                });
+                stopCamera();
+                setEcoPoints(prev => prev + 10);
+                
+                // 레벨업 체크
+                if (ecoPoints + 10 >= earthLevel * 100) {
+                    setEarthLevel(prev => prev + 1);
+                }
+            };
+
+            const getTodayDisposal = () => {
+                const today = new Date();
+                const dayOfWeek = today.getDay(); // 0: 일요일, 1: 월요일, ...
+                const days = ['일', '월', '화', '수', '목', '금', '토'];
+                const currentDay = days[dayOfWeek];
+                
+                // 구별 배출 규칙 적용
+                if (selectedDistrict === "서구") {
+                    if (dayOfWeek === 5 || dayOfWeek === 6) { // 금, 토
+                        return { canDispose: false, message: "금, 토요일은 모든 쓰레기 배출 금지일입니다" };
+                    }
+                    const canRecycle = dayOfWeek === 2 || dayOfWeek === 4; // 화, 목
+                    return { 
+                        canDispose: true, 
+                        currentDay,
+                        canRecycle,
+                        message: canRecycle ? "오늘은 재활용품 배출 가능일입니다!" : "오늘은 일반/음식물쓰레기 배출 가능일입니다"
+                    };
+                }
+                
+                return { canDispose: true, message: "배출 가능일입니다" };
+            };
+
+            const renderLocationSelector = () => (
+                <div className="location-selector">
+                    <div className="location-modal">
+                        <div className="modal-header">
+                            <h2 style={{fontSize: '20px', fontWeight: 'bold'}}>지역 설정</h2>
+                            <button
+                                onClick={() => setShowLocationSelector(false)}
+                                className="close-btn"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        
+                        <div style={{marginBottom: '16px'}}>
+                            <div className="form-group">
+                                <label className="form-label">구 선택</label>
+                                <select
+                                    value={selectedDistrict}
+                                    onChange={(e) => {
+                                        setSelectedDistrict(e.target.value);
+                                        setSelectedDong(locationDatabase[e.target.value].dongs[0]);
+                                    }}
+                                    className="form-select"
+                                >
+                                    {Object.keys(locationDatabase).map(district => (
+                                        <option key={district} value={district}>{district}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            
+                            <div className="form-group">
+                                <label className="form-label">동 선택</label>
+                                <select
+                                    value={selectedDong}
+                                    onChange={(e) => setSelectedDong(e.target.value)}
+                                    className="form-select"
+                                >
+                                    {locationDatabase[selectedDistrict].dongs.map(dong => (
+                                        <option key={dong} value={dong}>{dong}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div className="location-info">
+                            <h3>선택된 지역의 배출 정보</h3>
+                            <div className="location-info-list">
+                                <p>• 일반쓰레기: {getCurrentLocationData().schedule.general}</p>
+                                <p>• 재활용품: {getCurrentLocationData().schedule.recycle}</p>
+                                <p>• 음식물쓰레기: {getCurrentLocationData().schedule.food}</p>
